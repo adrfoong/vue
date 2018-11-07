@@ -10,14 +10,14 @@ export default {
   name: "EditableLabel",
   props: {
     label: String,
-    editing: Boolean,
+    editing: Boolean
   },
   data: function() {
     return {
-      value: this.label,
+      value: this.label
     };
   },
-  updated: function () {
+  updated: function() {
     if (this.editing) {
       this.$nextTick(() => {
         this.$refs.input.focus();
@@ -26,12 +26,12 @@ export default {
   },
   methods: {
     cancelEdit() {
-      this.$emit('blur');
+      this.$emit("blur");
     },
 
     saveLabel() {
-      this.$emit('save', this.value);
-      this.$emit('blur');
+      this.$emit("save", this.value);
+      this.$emit("blur");
     }
   }
 };

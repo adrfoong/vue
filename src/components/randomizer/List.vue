@@ -12,11 +12,10 @@
 export default {
   name: "List",
   props: {
-    items: Array,
+    items: Array
   }
-}
+};
 </script>
 
 <style>
-
 </style>

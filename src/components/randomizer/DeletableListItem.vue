@@ -16,14 +16,13 @@
 import "../../functionalComponents/ListItem.css";
 
 export default {
-  name: 'DeletableItem',
+  name: "DeletableItem",
   props: {
     deleteHandler: Function,
-    enableEdit: Function,
+    enableEdit: Function
   }
-}
+};
 </script>
 
 <style>
-
 </style>
