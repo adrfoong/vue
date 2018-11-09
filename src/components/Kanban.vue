@@ -9,7 +9,7 @@
             </label>
             <label for="colors">
                 <input type="checkbox" id="colors" v-model="colors">
-                Colors
+                Colors: Urgency
             </label>
             <label for="ascending">
                 <input type="checkbox" id="ascending" v-model="ascending">
@@ -23,43 +23,32 @@
                 <input type="checkbox" id="dark" v-model="dark">
                 Dark Theme
             </label>
+            <label for="focus">
+                <input type="checkbox" id="focus" v-model="focus">
+                Focus Mode
+            </label>
         </div>
-        <div class="column-container">
+        <div v-show="!focus" class="column-container">
             <div class="column" v-for="(category, key) in sortedIssues" :key='category.id'>
                 <h4 class="column-title">{{key}}</h4>
                 <div v-if="category.length === 0" class="column-card empty">
                     Empty
                 </div>
-                <div :class="['column-card', {colored: colors, decayBorder: !colors && issue.fadeOpacity < 0.4}]" v-for="issue in category" :key="issue.id">
-                    <div :style="decay ? createDecayStyle(issue.fadeOpacity) : {}" class="column-card-content" :class="[`urgency-${issue.urgency}`]">
-                        <div class="column-card-title"><a :href="issue.link">{{issue.id}}</a></div>
-                            <div class="issue-details" v-if="verbose">
-                                <div class="detail-item">Urgency: {{issue.urgencyLabel}}</div>
-                                <div class="detail-item">Priority: {{issue.priority}}</div>
-                                <div class="detail-item">Points: {{issue.points}}</div>
-                                <div class="detail-item">Days since created: {{issue.daysElapsed}}</div>
-                                <div v-if="issue.isP2E" class="detail-item label">P2E</div>
-                            </div>
-                            <div class="issue-details simplified" v-else>
-                                <span class="detail-item">U: {{issue.urgency}}</span>
-                                <span class="detail-item">Pr: {{issue.priority.split('')[0]}}</span>
-                                <span class="detail-item">S: {{issue.points}}</span>
-                                <span v-if="issue.isP2E" class="detail-item tag">P2E</span>
-                            </div>
-                        <div class="issue-summary">
-                            {{issue.summary}}
-                        </div>
-                    </div>
-                </div>
+                <Card @toggle-issue-focus="toggleIssueFocus(issue)" v-for="issue in category" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
             </div>
+        </div>
+        <div v-show="focus" class="column">
+          <Card :idle="true" v-for="issue in focusedIssues" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
         </div>
     </div>
 </template>
 
 <script>
 import moment from "moment";
+import Card from "@/components/Card";
 export default {
   name: "Kanban",
+  components: { Card },
   created() {
     this.fetchData();
   },
@@ -70,7 +59,9 @@ export default {
       colors: false,
       ascending: false,
       decay: false,
-      dark: false
+      dark: false,
+      focus: false,
+      focusedIssues: []
     };
   },
   computed: {
@@ -90,8 +81,21 @@ export default {
     }
   },
   methods: {
+    toggleIssueFocus(issue) {
+      console.log("toggling in kanban");
+      const index = this.focusedIssues.indexOf(issue);
+      if (index < 0) {
+        this.focusedIssues = [...this.focusedIssues, issue];
+      } else {
+        this.focusedIssues = [
+          ...this.focusedIssues.slice(0, index),
+          ...this.focusedIssues.slice(index + 1)
+        ];
+      }
+    },
     setDarkTheme() {
-      const container = document.querySelector(".column-container");
+      // TODO: Clean up css for theming
+      const container = document.querySelector(".kanban");
       const setProperty = container.style.setProperty;
       //   container.style.setProperty("--urgency-1-background", "red");
       container.style.setProperty("--column-background", "#8dacc64d");
@@ -109,9 +113,11 @@ export default {
         "--simplified-details-background",
         "transparent"
       );
+      container.style.setProperty("--main-background", "#283243");
+      container.style.setProperty("--main-text-color", "#f0f2dc");
     },
     unsetDarkTheme() {
-      const container = document.querySelector(".column-container");
+      const container = document.querySelector(".kanban");
       //   container.style.setProperty("--urgency-1-background", "initial");
       //   container.style.setProperty("--urgency-2-background", "initial");
       //   container.style.setProperty("--urgency-3-background", "initial");
@@ -129,6 +135,8 @@ export default {
       container.style.setProperty("--card-border-color", "unset");
       container.style.setProperty("--card-border-shadow-color", "unset");
       container.style.setProperty("--simplified-details-background", "unset");
+      container.style.setProperty("--main-background", "unset");
+      container.style.setProperty("--main-text-color", "unset");
     },
     createDecayStyle(opacity) {
       return {
@@ -318,7 +326,7 @@ export default {
   margin-left: 5px;
 }
 
-.decayBorder {
+.decay-border {
   /* border-width: 1px; */
   /* border-style: solid; */
   /* border-radius: 5px; */
@@ -326,6 +334,12 @@ export default {
 
   outline: 1px solid var(--card-border-color, #effafe80);
   /* box-shadow: 0 0 5px var(--card-border-shadow-color, #effafe) inset; */
+}
+
+.focused.column-card {
+  /* background: red !important; */
+  outline: solid 2px red;
+  /* box-shadow: 0 0 5px red inset; */
 }
 
 .column-card {
@@ -412,11 +426,8 @@ export default {
 
 .kanban {
   padding: 10px 0;
-}
-
-.kanban.dark {
-  color: #f0f2dc;
-  background: #283243;
+  color: var(--main-text-color, #2c3e50);
+  background: var(--main-background, transparent);
 }
 
 .test-component {
