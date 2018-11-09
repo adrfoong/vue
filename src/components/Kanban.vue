@@ -1,7 +1,7 @@
 <template>
-    <div :class="['kanban', {dark: dark}]">
-        <h2>Kanban</h2>
-        <div class="test-controls">
+    <div :class="['kanban', {dark: dark, 'focus-mode': focus}]">
+        <h2 class="focus-persistent">Kanban</h2>
+        <div class="test-controls focus-persistent">
             <h4>Test Controls</h4>
             <label for="verbose">
                 <input type="checkbox" id="verbose" v-model="verbose">
@@ -21,7 +21,7 @@
             </label>
             <label for="dark">
                 <input type="checkbox" id="dark" v-model="dark">
-                Dark Theme
+                Dark Themez
             </label>
             <label for="focus">
                 <input type="checkbox" id="focus" v-model="focus">
@@ -37,8 +37,11 @@
                 <Card @toggle-issue-focus="toggleIssueFocus(issue)" v-for="issue in category" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
             </div>
         </div>
-        <div v-show="focus" class="column">
-          <Card :idle="true" v-for="issue in focusedIssues" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
+        <div v-show="focus && focusedIssues.length > 0" class="column-container focus-persistent">
+          <div class="column">
+            <h4 class="column-title">Focused</h4> 
+            <Card :idle="true" v-for="issue in focusedIssues" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
+          </div>
         </div>
     </div>
 </template>
@@ -428,6 +431,11 @@ export default {
   padding: 10px 0;
   color: var(--main-text-color, #2c3e50);
   background: var(--main-background, transparent);
+}
+
+.kanban.focus-mode > *:not(.focus-persistent) {
+  /* filter: blur(3px); */
+  opacity: 0;
 }
 
 .test-component {
