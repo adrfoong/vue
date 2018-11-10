@@ -1,7 +1,7 @@
 <template>
     <div :class="['kanban', {dark: dark, 'focus-mode': focus}]">
         <h2 class="focus-persistent">Kanban</h2>
-        <div class="test-controls focus-persistent">
+        <div class="test-controls">
             <h4>Test Controls</h4>
             <label for="verbose">
                 <input type="checkbox" id="verbose" v-model="verbose">
@@ -21,7 +21,7 @@
             </label>
             <label for="dark">
                 <input type="checkbox" id="dark" v-model="dark">
-                Dark Themez
+                Dark Theme
             </label>
             <label for="focus">
                 <input type="checkbox" id="focus" v-model="focus">
@@ -37,10 +37,10 @@
                 <Card @toggle-issue-focus="toggleIssueFocus(issue)" v-for="issue in category" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
             </div>
         </div>
-        <div v-show="focus && focusedIssues.length > 0" class="column-container focus-persistent">
+        <div v-show="focus && sortedFocusedIssues.length > 0" class="column-container focus-persistent">
           <div class="column">
             <h4 class="column-title">Focused</h4> 
-            <Card :idle="true" v-for="issue in focusedIssues" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
+            <Card :idle="true" v-for="issue in sortedFocusedIssues" :issue="issue" :colors="colors" :decay="decay" :verbose="verbose" :key="issue.id"/>
           </div>
         </div>
     </div>
@@ -69,9 +69,13 @@ export default {
   },
   computed: {
     sortedIssues() {
-      this.sortByUrgency();
+      this.sortIssues();
       this.computeDaysElapsed();
       return this.issues;
+    },
+    sortedFocusedIssues() {
+      const sorted = this.focusedIssues;
+      return sorted.sort(this.sortByUrgency);
     }
   },
   watch: {
@@ -160,15 +164,16 @@ export default {
         });
       }
     },
-    sortByUrgency() {
+    sortByUrgency(a, b) {
+      if (this.ascending) {
+        return a.urgency - b.urgency;
+      } else {
+        return b.urgency - a.urgency;
+      }
+    },
+    sortIssues() {
       for (let category in this.issues) {
-        this.issues[category].sort((a, b) => {
-          if (this.ascending) {
-            return a.urgency - b.urgency;
-          } else {
-            return b.urgency - a.urgency;
-          }
-        });
+        this.issues[category].sort(this.sortByUrgency);
       }
     },
     fetchData() {
@@ -435,7 +440,7 @@ export default {
 
 .kanban.focus-mode > *:not(.focus-persistent) {
   /* filter: blur(3px); */
-  opacity: 0;
+  /* opacity: 0; */
 }
 
 .test-component {
