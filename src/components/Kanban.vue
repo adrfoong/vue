@@ -89,7 +89,6 @@ export default {
   },
   methods: {
     toggleIssueFocus(issue) {
-      console.log("toggling in kanban");
       const index = this.focusedIssues.indexOf(issue);
       if (index < 0) {
         this.focusedIssues = [...this.focusedIssues, issue];
