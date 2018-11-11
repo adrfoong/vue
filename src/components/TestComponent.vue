@@ -12,7 +12,6 @@ export default {
 
 <style>
 .test-component {
-  width: 500px;
   margin: auto;
   border-radius: 20px;
   background: rgb(246, 250, 250);

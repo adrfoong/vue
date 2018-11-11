@@ -57,7 +57,7 @@ export default {
   transform: translateX(10px);
 
   /* background: rgba(255, 255, 255, .75); */
-  transition: all 500ms;
+  transition: all 100ms;
 }
 
 .controls .edit-button:hover {
@@ -79,7 +79,7 @@ export default {
   /* display: inherit; */
   opacity: 1;
   transform: translateX(0);
-  transition: all 500ms 200ms;
+  transition: all 200ms;
 }
 
 .deletable-list-item:hover .editable-label {
