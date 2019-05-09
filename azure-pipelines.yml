@@ -15,15 +15,15 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- task: AzureFileCopy@3
-  inputs:
-    SourcePath: '$(System.DefaultWorkingDirectory)'
-    azureSubscription: 'Free Trial (6ae6c3d1-ff15-494f-b21a-b3899b396b70)'
-    Destination: 'AzureBlob'
-    storage: 'adrfg'
-    ContainerName: '\'
-
 - script: |
     npm install
     npm run build
   displayName: 'npm install and build'
+
+- task: AzureFileCopy@3
+  inputs:
+    SourcePath: '$(System.DefaultWorkingDirectory)/dist'
+    azureSubscription: 'Free Trial (6ae6c3d1-ff15-494f-b21a-b3899b396b70)'
+    Destination: 'AzureBlob'
+    storage: 'adrfg'
+    ContainerName: '$web'
