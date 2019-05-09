@@ -2,13 +2,6 @@
 # Build a Node.js project that uses Vue.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-- task: AzureFileCopy@3
-  inputs:
-    SourcePath: '$(System.DefaultWorkingDirectory)'
-    azureSubscription: 'Free Trial (6ae6c3d1-ff15-494f-b21a-b3899b396b70)'
-    Destination: 'AzureBlob'
-    storage: 'adrfg'
-    ContainerName: '\'
 
 trigger:
 - master
@@ -21,6 +14,14 @@ steps:
   inputs:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
+
+- task: AzureFileCopy@3
+  inputs:
+    SourcePath: '$(System.DefaultWorkingDirectory)'
+    azureSubscription: 'Free Trial (6ae6c3d1-ff15-494f-b21a-b3899b396b70)'
+    Destination: 'AzureBlob'
+    storage: 'adrfg'
+    ContainerName: '\'
 
 - script: |
     npm install
