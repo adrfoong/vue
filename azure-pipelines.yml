@@ -22,7 +22,7 @@ steps:
 
 - task: AzureFileCopy@3
   inputs:
-    SourcePath: '$(System.DefaultWorkingDirectory)/dist'
+    SourcePath: '$(System.DefaultWorkingDirectory)'
     azureSubscription: 'Free Trial (6ae6c3d1-ff15-494f-b21a-b3899b396b70)'
     Destination: 'AzureBlob'
     storage: 'adrfg'
