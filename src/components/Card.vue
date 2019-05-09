@@ -10,7 +10,7 @@
                     <div v-if="issue.isP2E" class="detail-item label">P2E</div>
                 </div>
                 <div class="issue-details simplified" v-else>
-                    <span class="detail-item">U: {{issue.urgency}}</span>
+                    <span class="detail-item">Urg: {{issue.urgency}}</span>
                     <span class="detail-item">Pr: {{issue.priority.split('')[0]}}</span>
                     <span class="detail-item">S: {{issue.points}}</span>
                     <span v-if="issue.isP2E" class="detail-item tag">P2E</span>
